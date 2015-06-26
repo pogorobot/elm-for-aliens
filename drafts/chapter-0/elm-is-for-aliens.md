@@ -1,4 +1,4 @@
-*** Chapter 0: Elm is for Aliens
+### Chapter 0: Elm is for Aliens
 
 Rails is for zombies, I learned.
 
