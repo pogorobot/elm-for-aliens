@@ -1907,21 +1907,48 @@ Elm.Main.make = function (_elm) {
    $Color = Elm.Color.make(_elm),
    $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
    $Graphics$Element = Elm.Graphics.Element.make(_elm);
+   var eyeColor = A3($Color.rgb,
+   0,
+   168,
+   107);
+   var skull_color = A3($Color.rgb,
+   75,
+   130,
+   0);
+   var rightPupil = $Graphics$Collage.move({ctor: "_Tuple2"
+                                           ,_0: 10
+                                           ,_1: 10})($Graphics$Collage.filled($Color.black)($Graphics$Collage.circle(5)));
+   var rightEye = $Graphics$Collage.move({ctor: "_Tuple2"
+                                         ,_0: 10
+                                         ,_1: 10})($Graphics$Collage.filled(eyeColor)($Graphics$Collage.circle(10)));
+   var leftPupil = $Graphics$Collage.move({ctor: "_Tuple2"
+                                          ,_0: 50
+                                          ,_1: 10})($Graphics$Collage.filled($Color.black)($Graphics$Collage.circle(5)));
+   var leftEye = $Graphics$Collage.move({ctor: "_Tuple2"
+                                        ,_0: 50
+                                        ,_1: 10})($Graphics$Collage.filled(eyeColor)($Graphics$Collage.circle(10)));
    var skull = $Graphics$Collage.move({ctor: "_Tuple2"
                                       ,_0: -10
-                                      ,_1: 0})($Graphics$Collage.filled($Color.green)($Graphics$Collage.circle(75)));
+                                      ,_1: 0})($Graphics$Collage.filled(skull_color)($Graphics$Collage.circle(75)));
    var head = A3($Graphics$Collage.collage,
    300,
    300,
    _L.fromArray([skull
-                ,$Graphics$Collage.move({ctor: "_Tuple2"
-                                        ,_0: 50
-                                        ,_1: 10})($Graphics$Collage.filled($Color.green)($Graphics$Collage.circle(50)))]));
+                ,leftEye
+                ,rightEye
+                ,leftPupil
+                ,rightPupil]));
    var main = head;
    _elm.Main.values = {_op: _op
                       ,main: main
                       ,head: head
-                      ,skull: skull};
+                      ,skull: skull
+                      ,leftEye: leftEye
+                      ,leftPupil: leftPupil
+                      ,rightEye: rightEye
+                      ,rightPupil: rightPupil
+                      ,skull_color: skull_color
+                      ,eyeColor: eyeColor};
    return _elm.Main.values;
 };Elm.Maybe = Elm.Maybe || {};
 Elm.Maybe.make = function (_elm) {
