@@ -14,6 +14,7 @@ head =
     , rightEye
     , leftPupil
     , rightPupil
+    , mouth
     ]
   
 skull : Form
@@ -45,6 +46,19 @@ rightPupil =
   circle 5
     |> filled black
     |> move (10, 10)
+
+mouth : Form
+mouth =
+  mouthPath
+    |> traced (solid mouthColor)
+
+mouthPath : Path
+mouthPath =
+  path [(10, -20), (30, -30), (50, -20)]
+
+mouthColor : Color
+mouthColor =
+  rgb 150 50 50
 
 skull_color : Color
 skull_color =
