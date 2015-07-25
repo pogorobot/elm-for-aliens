@@ -3424,29 +3424,41 @@ Elm.Main.make = function (_elm) {
       return $Html.fromElement(A3($Graphics$Collage.collage,
       300,
       300,
-      _L.fromArray([$Graphics$Collage.filled($Color.green)($Graphics$Collage.circle($Basics.cos($Basics.degrees($Basics.toFloat(model))) * 50))])));
+      _L.fromArray([$Graphics$Collage.filled(A3($Color.rgb,
+      75,
+      130,
+      0))($Graphics$Collage.circle($Basics.cos($Basics.degrees($Basics.toFloat(model))) * 50))])));
    });
+   var cluck = $Time.fps(60);
    var clock = $Time.fps(30);
    var update = F2(function (action,
    model) {
       return function () {
          switch (action.ctor)
          {case "NoOp": return model;
-            case "Tick": return model + 1;}
+            case "Tick": return model + 4;
+            case "Tock": return model - 1;}
          _U.badCase($moduleName,
-         "between lines 22 and 24");
+         "between lines 24 and 27");
       }();
    });
    var NoOp = {ctor: "NoOp"};
    var actionMailbox = $Signal.mailbox(NoOp);
    var address = actionMailbox.address;
+   var Tock = {ctor: "Tock"};
+   var clicker = function (time) {
+      return Tock;
+   };
    var Tick = {ctor: "Tick"};
    var ticker = function (time) {
-      return Tick;
+      return _U.eq(A2($Basics._op["%"],
+      $Basics.floor(time),
+      2),
+      0) ? Tick : Tock;
    };
-   var actions = A2($Signal.map,
-   ticker,
-   clock);
+   var actions = A2($Signal.merge,
+   A2($Signal.map,ticker,clock),
+   A2($Signal.map,clicker,cluck));
    var init = 0;
    var main = A2($Signal.map,
    view(address),
@@ -3457,13 +3469,16 @@ Elm.Main.make = function (_elm) {
    _elm.Main.values = {_op: _op
                       ,init: init
                       ,Tick: Tick
+                      ,Tock: Tock
                       ,NoOp: NoOp
                       ,update: update
                       ,clock: clock
+                      ,cluck: cluck
                       ,actionMailbox: actionMailbox
                       ,address: address
                       ,actions: actions
                       ,ticker: ticker
+                      ,clicker: clicker
                       ,view: view
                       ,main: main};
    return _elm.Main.values;
