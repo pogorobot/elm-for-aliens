@@ -1,5 +1,7 @@
 import Text exposing(fromString)
 import Html exposing (..)
+import Html.Attributes exposing (..)
+import Graphics.Element exposing (..)
 import Signal exposing (..)
 import String exposing(padRight)
 import Mouse exposing (..)
@@ -46,8 +48,25 @@ actions =
 
 view : Signal.Address Action -> Model -> Html
 view address model =
-    div []
-    [ Html.text (padRight model 'O' "YO")
+    div [myStyle]
+    [ Html.text (padRight model 'O' "YO" ++ "!"),
+      billMurray
+    ]
+
+billMurray : Html
+billMurray =
+  image 300 300 "bill-murray.jpg"
+  |> fromElement
+
+
+myStyle : Attribute
+myStyle =
+  style
+    [ ("width", "100%")
+    , ("height", "40px")
+    , ("padding", "10px 0")
+    , ("font-size", "2em")
+    , ("text-align", "center")
     ]
 
 main =
