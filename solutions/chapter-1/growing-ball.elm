@@ -4,6 +4,7 @@ import Graphics.Element exposing (..)
 import Html exposing (..)
 import Time exposing (..)
 import Signal exposing (..)
+import Random
 
 -- MODEL
 
@@ -32,9 +33,29 @@ type Action = Tick
 update : Action -> Model -> Model
 update action model =
   case action of 
-    Tick -> { model | size <- model.size + 1 }
+    Tick -> { model | size <- model.size + 1, color <- cycle model.color }
     Tock -> { model | x <- model.x + 1, y <- model.y + 3 }
     NoOp -> model
+
+cycle : Color -> Color
+cycle color =
+  rgb ((toRgb color).red + randomInt (minusRed color) (plusRed color) color) ((toRgb color).green + randomInt -25 10 color) ((toRgb color).blue + randomInt -20 20 color)
+
+randomInt : Int -> Int -> Color -> Int
+randomInt lower upper color =
+  Random.generate (Random.int upper lower) (colorHash color) |> fst
+
+minusRed : Color -> Int
+minusRed color =
+  100 - (toRgb color).red
+
+plusRed : Color -> Int
+plusRed color =
+  200 - (toRgb color).red
+
+colorHash : Color -> Random.Seed
+colorHash color =
+  (((toRgb color).red * (toRgb color).green * (toRgb color).blue) % 2000) |> Random.initialSeed
 
 clock : Signal Time
 clock =
@@ -63,7 +84,7 @@ actions =
 
 ticker : Time -> Action
 ticker time =
-  if floor time % 2 == 0 then Tick else Tock
+  Tick
 
 clicker : Time -> Action
 clicker time =
