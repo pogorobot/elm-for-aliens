@@ -50,11 +50,15 @@ rightPupil =
 mouth : Form
 mouth =
   mouthPath
-    |> traced (solid mouthColor)
+    |> traced { mouthStyle | width <- 2}
 
 mouthPath : Path
 mouthPath =
   path [(10, -20), (30, -30), (50, -20)]
+
+mouthStyle : LineStyle
+mouthStyle =
+  solid mouthColor
 
 mouthColor : Color
 mouthColor =

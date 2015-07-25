@@ -1919,6 +1919,7 @@ Elm.Main.make = function (_elm) {
    150,
    50,
    50);
+   var mouthStyle = $Graphics$Collage.solid(mouthColor);
    var mouthPath = $Graphics$Collage.path(_L.fromArray([{ctor: "_Tuple2"
                                                         ,_0: 10
                                                         ,_1: -20}
@@ -1928,7 +1929,9 @@ Elm.Main.make = function (_elm) {
                                                        ,{ctor: "_Tuple2"
                                                         ,_0: 50
                                                         ,_1: -20}]));
-   var mouth = $Graphics$Collage.traced($Graphics$Collage.solid(mouthColor))(mouthPath);
+   var mouth = $Graphics$Collage.traced(_U.replace([["width"
+                                                    ,2]],
+   mouthStyle))(mouthPath);
    var rightPupil = $Graphics$Collage.move({ctor: "_Tuple2"
                                            ,_0: 10
                                            ,_1: 10})($Graphics$Collage.filled($Color.black)($Graphics$Collage.circle(5)));
@@ -1964,6 +1967,7 @@ Elm.Main.make = function (_elm) {
                       ,rightPupil: rightPupil
                       ,mouth: mouth
                       ,mouthPath: mouthPath
+                      ,mouthStyle: mouthStyle
                       ,mouthColor: mouthColor
                       ,skull_color: skull_color
                       ,eyeColor: eyeColor};
