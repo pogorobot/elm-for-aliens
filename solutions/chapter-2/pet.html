@@ -3529,6 +3529,97 @@ Elm.Html.Attributes.make = function (_elm) {
                                  ,scope: scope
                                  ,manifest: manifest};
    return _elm.Html.Attributes.values;
+};Elm.Html = Elm.Html || {};
+Elm.Html.Events = Elm.Html.Events || {};
+Elm.Html.Events.make = function (_elm) {
+   "use strict";
+   _elm.Html = _elm.Html || {};
+   _elm.Html.Events = _elm.Html.Events || {};
+   if (_elm.Html.Events.values)
+   return _elm.Html.Events.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Html.Events",
+   $Html = Elm.Html.make(_elm),
+   $Json$Decode = Elm.Json.Decode.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $VirtualDom = Elm.VirtualDom.make(_elm);
+   var keyCode = A2($Json$Decode._op[":="],
+   "keyCode",
+   $Json$Decode.$int);
+   var targetChecked = A2($Json$Decode.at,
+   _L.fromArray(["target"
+                ,"checked"]),
+   $Json$Decode.bool);
+   var targetValue = A2($Json$Decode.at,
+   _L.fromArray(["target"
+                ,"value"]),
+   $Json$Decode.string);
+   var on = $VirtualDom.on;
+   var messageOn = F3(function (name,
+   addr,
+   msg) {
+      return A3(on,
+      name,
+      $Json$Decode.value,
+      function (_v0) {
+         return function () {
+            return A2($Signal.message,
+            addr,
+            msg);
+         }();
+      });
+   });
+   var onClick = messageOn("click");
+   var onDoubleClick = messageOn("dblclick");
+   var onMouseMove = messageOn("mousemove");
+   var onMouseDown = messageOn("mousedown");
+   var onMouseUp = messageOn("mouseup");
+   var onMouseEnter = messageOn("mouseenter");
+   var onMouseLeave = messageOn("mouseleave");
+   var onMouseOver = messageOn("mouseover");
+   var onMouseOut = messageOn("mouseout");
+   var onBlur = messageOn("blur");
+   var onFocus = messageOn("focus");
+   var onSubmit = messageOn("submit");
+   var onKey = F3(function (name,
+   addr,
+   handler) {
+      return A3(on,
+      name,
+      keyCode,
+      function (code) {
+         return A2($Signal.message,
+         addr,
+         handler(code));
+      });
+   });
+   var onKeyUp = onKey("keyup");
+   var onKeyDown = onKey("keydown");
+   var onKeyPress = onKey("keypress");
+   _elm.Html.Events.values = {_op: _op
+                             ,onBlur: onBlur
+                             ,onFocus: onFocus
+                             ,onSubmit: onSubmit
+                             ,onKeyUp: onKeyUp
+                             ,onKeyDown: onKeyDown
+                             ,onKeyPress: onKeyPress
+                             ,onClick: onClick
+                             ,onDoubleClick: onDoubleClick
+                             ,onMouseMove: onMouseMove
+                             ,onMouseDown: onMouseDown
+                             ,onMouseUp: onMouseUp
+                             ,onMouseEnter: onMouseEnter
+                             ,onMouseLeave: onMouseLeave
+                             ,onMouseOver: onMouseOver
+                             ,onMouseOut: onMouseOut
+                             ,on: on
+                             ,targetValue: targetValue
+                             ,targetChecked: targetChecked
+                             ,keyCode: keyCode};
+   return _elm.Html.Events.values;
 };Elm.Json = Elm.Json || {};
 Elm.Json.Decode = Elm.Json.Decode || {};
 Elm.Json.Decode.make = function (_elm) {
@@ -4044,6 +4135,7 @@ Elm.Main.make = function (_elm) {
    $Graphics$Element = Elm.Graphics.Element.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $String = Elm.String.make(_elm),
    $Time = Elm.Time.make(_elm);
@@ -4083,13 +4175,6 @@ Elm.Main.make = function (_elm) {
       $Basics.toString($Basics.floor(model.love)),
       " much!"))))))));
    };
-   var view = F2(function (address,
-   model) {
-      return A2($Html.div,
-      _L.fromArray([myStyle]),
-      _L.fromArray([messageFrom(model)
-                   ,billMurray]));
-   });
    var update = F2(function (action,
    model) {
       return function () {
@@ -4100,19 +4185,19 @@ Elm.Main.make = function (_elm) {
               model);
             case "Play":
             return _U.replace([["love"
-                               ,model.love * model.happiness]],
+                               ,model.love + model.happiness - model.hunger]],
               model);
             case "Stroke":
             return _U.replace([["happiness"
-                               ,model.happiness * 1.2]],
+                               ,model.happiness + 10 - model.hunger]],
               model);
             case "Wait": return {_: {}
-                                ,happiness: model.happiness - 1.0e-2
-                                ,hunger: model.hunger + 1.0e-2
-                                ,love: model.love - 1.0e-3
+                                ,happiness: model.happiness - 0.1
+                                ,hunger: model.hunger + 0.1
+                                ,love: model.love - 1.0e-2
                                 ,name: model.name};}
          _U.badCase($moduleName,
-         "between lines 36 and 40");
+         "between lines 37 and 41");
       }();
    });
    var NoOp = {ctor: "NoOp"};
@@ -4125,12 +4210,45 @@ Elm.Main.make = function (_elm) {
    var timeSignal = A2($Signal.map,
    clock,
    $Time.fps(30));
-   var actions = timeSignal;
+   var actions = A2($Signal.merge,
+   actionMailbox.signal,
+   timeSignal);
    var Play = {ctor: "Play"};
+   var playButton = function (address) {
+      return A2($Html.button,
+      _L.fromArray([A2($Html$Events.onClick,
+      address,
+      Play)]),
+      _L.fromArray([$Html.text("Play")]));
+   };
    var Feed = function (a) {
       return {ctor: "Feed",_0: a};
    };
+   var feedButton = function (address) {
+      return A2($Html.button,
+      _L.fromArray([A2($Html$Events.onClick,
+      address,
+      Feed("Carrots"))]),
+      _L.fromArray([$Html.text("Feed")]));
+   };
    var Stroke = {ctor: "Stroke"};
+   var petButton = function (address) {
+      return A2($Html.button,
+      _L.fromArray([A2($Html$Events.onClick,
+      address,
+      Stroke)]),
+      _L.fromArray([$Html.text("Pet")]));
+   };
+   var view = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([myStyle]),
+      _L.fromArray([messageFrom(model)
+                   ,billMurray
+                   ,petButton(address)
+                   ,feedButton(address)
+                   ,playButton(address)]));
+   });
    var init = {_: {}
               ,happiness: 100
               ,hunger: 0
@@ -4167,6 +4285,9 @@ Elm.Main.make = function (_elm) {
                       ,address: address
                       ,actions: actions
                       ,view: view
+                      ,petButton: petButton
+                      ,feedButton: feedButton
+                      ,playButton: playButton
                       ,messageFrom: messageFrom
                       ,myStyle: myStyle
                       ,billMurray: billMurray

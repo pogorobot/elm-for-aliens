@@ -1,6 +1,7 @@
 import Text exposing(fromString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Graphics.Element exposing (..)
 import Signal exposing (..)
 import String exposing(padRight)
@@ -34,10 +35,10 @@ type Action = Stroke
 update : Action -> Model -> Model
 update action model =
   case action of
-    Stroke -> { model | happiness <- model.happiness * 1.2}
+    Stroke -> { model | happiness <- model.happiness + 10 - model.hunger }
     Feed food -> { model | hunger <- model.hunger - toFloat (String.length(food))}
-    Play -> { model | love <- model.love * model.happiness }
-    Wait -> { name = model.name, hunger = model.hunger + 0.01, happiness = model.happiness - 0.01, love = model.love - 0.001 }
+    Play -> { model | love <- model.love + model.happiness - model.hunger }
+    Wait -> { name = model.name, hunger = model.hunger + 0.1, happiness = model.happiness - 0.1, love = model.love - 0.01 }
 
 
 timeSignal : Signal Action
@@ -60,7 +61,7 @@ address =
 
 actions : Signal Action
 actions =
-  timeSignal
+  Signal.merge actionMailbox.signal timeSignal
 
 --VIEW
 
@@ -69,7 +70,23 @@ view address model =
     div [myStyle]
     [ messageFrom model
     , billMurray
+    , petButton address
+    , feedButton address
+    , playButton address
     ]
+
+petButton : Signal.Address Action -> Html
+petButton address = button
+  [ onClick address Stroke 
+  ] [ text "Pet"]
+
+feedButton : Signal.Address Action -> Html
+feedButton address = button
+  [ onClick address (Feed "Carrots") ] [text "Feed"]
+
+playButton : Signal.Address Action -> Html
+playButton address = button
+  [ onClick address Play ] [text "Play"]
 
 messageFrom : Model -> Html
 messageFrom model =
