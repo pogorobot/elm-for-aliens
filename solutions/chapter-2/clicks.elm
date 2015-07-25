@@ -2,6 +2,7 @@ import Text exposing(fromString)
 import Html exposing (..)
 import Signal exposing (..)
 import String exposing(padRight)
+import Mouse exposing (..)
 -- MODEL
 type alias Model = Int
 
@@ -18,6 +19,14 @@ update action model =
     Click -> model + 1
     NoOp -> model
 
+clickEventStream : Signal Action
+clickEventStream =
+  Signal.map handleClickEvent Mouse.clicks
+
+handleClickEvent : a -> Action
+handleClickEvent event =
+  Click
+
 
 -- This is the mailbox that receives all the actions
 -- that will update the application.
@@ -31,7 +40,7 @@ address =
 
 actions : Signal Action
 actions =
-   actionMailbox.signal
+  clickEventStream
 
 --VIEW
 
