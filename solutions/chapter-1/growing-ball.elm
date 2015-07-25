@@ -7,10 +7,20 @@ import Signal exposing (..)
 
 -- MODEL
 
-type alias Model = Int
+type alias Model = 
+  { size  : Int
+  , x     : Int
+  , y     : Int
+  , color : Color
+  }
 
 init : Model
-init = 0
+init = 
+  { size = 0
+  , x = 0
+  , y = 0
+  , color = (rgb 75 130 0)
+  }
 
 -- UPDATE
 
@@ -22,8 +32,8 @@ type Action = Tick
 update : Action -> Model -> Model
 update action model =
   case action of 
-    Tick -> model + 4
-    Tock -> model - 1
+    Tick -> { model | size <- model.size + 1 }
+    Tock -> { model | x <- model.x + 1, y <- model.y + 3 }
     NoOp -> model
 
 clock : Signal Time
@@ -65,9 +75,11 @@ view : Signal.Address Action -> Model -> Html
 view address model =
   collage 300 300
   [
-    cos (degrees (toFloat model)) * 50
+    cos (degrees (toFloat model.size)) * 50
       |> circle
-      |> filled (rgb 75 130 0)
+      |> filled model.color
+      |> moveX (sin (degrees (toFloat model.x)) * 100)
+      |> moveY (cos (degrees (toFloat model.y)) * 100)
   ]
    |> fromElement
 

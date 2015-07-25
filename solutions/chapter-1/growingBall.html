@@ -3424,22 +3424,26 @@ Elm.Main.make = function (_elm) {
       return $Html.fromElement(A3($Graphics$Collage.collage,
       300,
       300,
-      _L.fromArray([$Graphics$Collage.filled(A3($Color.rgb,
-      75,
-      130,
-      0))($Graphics$Collage.circle($Basics.cos($Basics.degrees($Basics.toFloat(model))) * 50))])));
+      _L.fromArray([$Graphics$Collage.moveY($Basics.cos($Basics.degrees($Basics.toFloat(model.y))) * 100)($Graphics$Collage.moveX($Basics.sin($Basics.degrees($Basics.toFloat(model.x))) * 100)($Graphics$Collage.filled(model.color)($Graphics$Collage.circle($Basics.cos($Basics.degrees($Basics.toFloat(model.size))) * 50))))])));
    });
-   var cluck = $Time.fps(60);
+   var cluck = $Time.fps(30);
    var clock = $Time.fps(30);
    var update = F2(function (action,
    model) {
       return function () {
          switch (action.ctor)
          {case "NoOp": return model;
-            case "Tick": return model + 4;
-            case "Tock": return model - 1;}
+            case "Tick":
+            return _U.replace([["size"
+                               ,model.size + 1]],
+              model);
+            case "Tock":
+            return _U.replace([["x"
+                               ,model.x + 1]
+                              ,["y",model.y + 3]],
+              model);}
          _U.badCase($moduleName,
-         "between lines 24 and 27");
+         "between lines 34 and 37");
       }();
    });
    var NoOp = {ctor: "NoOp"};
@@ -3459,14 +3463,29 @@ Elm.Main.make = function (_elm) {
    var actions = A2($Signal.merge,
    A2($Signal.map,ticker,clock),
    A2($Signal.map,clicker,cluck));
-   var init = 0;
+   var init = {_: {}
+              ,color: A3($Color.rgb,75,130,0)
+              ,size: 0
+              ,x: 0
+              ,y: 0};
    var main = A2($Signal.map,
    view(address),
    A3($Signal.foldp,
    update,
    init,
    actions));
+   var Model = F4(function (a,
+   b,
+   c,
+   d) {
+      return {_: {}
+             ,color: d
+             ,size: a
+             ,x: b
+             ,y: c};
+   });
    _elm.Main.values = {_op: _op
+                      ,Model: Model
                       ,init: init
                       ,Tick: Tick
                       ,Tock: Tock
